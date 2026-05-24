@@ -6,7 +6,7 @@
 - Moctezuma Pérez David
 - Morales Acosa Isaac
 
-** GRUPO 6S12**
+* GRUPO 6S12
 
 # Objetivo General
 Implementar un servidor NGINX compilado desde código fuente junto con PHP-FPM.
@@ -16,5 +16,9 @@ Implementar un servidor NGINX compilado desde código fuente junto con PHP-FPM.
 - Compilar PHP
 - Configurar FastCGI
 - Implementar SystemD
+
+# Desarrollo del proyecto
+# Conclusiones
+Bibliografía
 
 

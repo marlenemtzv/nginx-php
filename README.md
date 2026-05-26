@@ -80,13 +80,82 @@ systemctl stop nginx
 systemctl start nginx
 
 
+Después de la configuración básica de NGINX, continuamos con la instalación y compilación de PHP 8.4 desde código fuente para integrarlo con php-fpm y FastCGI mediante un socket UNIX.
 
+Primero descargamos el código fuente de PHP: 
+cd /usr/local/src
+wget https://www.php.net/distributions/php-8.4.0.tar.gz
+tar -xzf php-8.4.0.tar.gz
+cd php-8.4.0
 
+Creamos el usuario y grupo
+groupadd php
+useradd --system --no-create-home --shell /sbin/nologin -g nginx php
+
+Instalamos dependencias necesarias para soporte de imágenes, internacionalización y compilación:
+dnf install -y libxml2-devel sqlite-devel bzip2-devel curl-devel libjpeg-devel libpng-devel freetype-devel oniguruma-devel libicu-devel openssl-devel
+
+Configuramos la compilación de PHP indicando el prefijo /srv/nginx, habilitando php-fpm y el socket UNIX:
+./configure --prefix=/srv/nginx/php \
+--enable-fpm \
+--with-fpm-user=php \
+--with-fpm-group=nginx \
+--with-openssl \
+--enable-mbstring \
+--with-zlib \
+--with-curl \
+--enable-intl \
+--with-jpeg \
+--with-freetype \
+--with-pdo-sqlite \
+--enable-gd
+
+compilamos con:
+make
+make install
+
+para los archivos de configuración:
+cp php.ini-production /srv/nginx/php/lib/php.ini
+cp /srv/nginx/php/etc/php-fpm.conf.default /srv/nginx/php/etc/php-fpm.conf
+cp /srv/nginx/php/etc/php-fpm.d/www.conf.default /srv/nginx/php/etc/php-fpm.d/www.conf
+
+nano /srv/nginx/php/etc/php-fpm.d/www.conf
+
+/srv/nginx/php/sbin/php-fpm -t
+
+nano /etc/systemd/system/php-fpm8.4.service
+
+systemctl daemon-reload
+systemctl enable --now php-fpm8.4
+systemctl status php-fpm8.4
+
+nano /srv/nginx/conf/nginx.conf
+
+probamos con /srv/nginx/sbin/nginx -t
+
+reiniciamos servicios 
+systemctl restart nginx
+systemctl restart php-fpm8.4
+
+creamos un archivo de prueba php
+cd /srv/nginx/html
+nano phpinfo.php
+
+volvimos a probar en links
+http://localhost/phpinfo.php
 
 
 
 
 # Conclusiones
-Bibliografía
+Con esta práctica logramos usar y comprender mejor los comandos que habíamos revisado en clase. 
+
+Lo más importante que tuvimos a consideración fue revisar la versiones del código fuente para instalar. Al igual que los permisos para cada usuario y qué servicios podían ejecutar y a quienes pertenecían.
+
+Comprendimos mejor cómo funcionan los directorios de instalación, los archivos de configuración y los servicios administrados por SystemD.
+
+Lo que nos deja esta práctica es que es importante validar la configuración de cada servicio antes de arrancarlo o iniciarlo.
+
+# Bibliografía
 
 

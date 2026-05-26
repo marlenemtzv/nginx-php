@@ -158,4 +158,4 @@ Lo que nos deja esta práctica es que es importante validar la configuración de
 
 # Bibliografía
 
-
+Gustavo Romero. (2026, 25 mayo). Instalación de NGINX y PHP desde código fuente [Video]. YouTube. https://youtu.be/i-DGl-R1uFw?si=-v8L1dE_97i4j8eQ
